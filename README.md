@@ -1,11 +1,11 @@
-# Nonogram Visualizer
+# Nondle
 
 ## Credit
 
 Author: Christian Barrett
-Date: 08/19/2024
+Date: 9/10/2024
 
 ## Description
 
-The objective of this project is to not only implement an algorithm to solve nonograms,
-but to make a cool visualization for it as well.
+The objective of this project is to create a daily nonogram game
+for the pleasure of the masses.

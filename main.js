@@ -1,24 +1,23 @@
-import { calculateCanvasSize, drawGrid } from "./modules/canvas_setup.js";
+import CanvasHelper from "./modules/canvas_helper.js";
+import { TeaPot } from "./modules/array_coded_puzzles.js";
+
+let ch = new CanvasHelper(TeaPot, false);
 
 function setup() {
-	frameRate(60);
-	const { canvasWidth, canvasHeight } = calculateCanvasSize();
-	createCanvas(canvasWidth, canvasHeight);
-	background(240);
-	drawGrid();
+	ch.createCanvas();
 }
 
-function draw() {
-	// put drawing code here
-}
+function draw() {}
 
 function windowResized() {
-	const { canvasWidth, canvasHeight } = calculateCanvasSize();
-	resizeCanvas(canvasWidth, canvasHeight);
-	background(240);
-	drawGrid();
+	ch.resizeCanvas();
+}
+
+function mouseClicked() {
+	ch.progressCellStates();
 }
 
 window.setup = setup;
 window.draw = draw;
 window.windowResized = windowResized;
+window.mouseClicked = mouseClicked;
