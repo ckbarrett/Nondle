@@ -1,3 +1,9 @@
+export const GameState = Object.freeze({
+	NOTSTARTED: 0,
+	INPROGRESS: 1,
+	FINISHED: 2,
+});
+
 export default class CanvasHelper {
 	gridLineWidth;
 	offset;
@@ -15,17 +21,19 @@ export default class CanvasHelper {
 	cellStates;
 	canvasWidth;
 	canvasHeight;
+	gameState;
+	puzzle;
 
-	constructor(puzzle, drawBoxesForNumbers) {
+	constructor(puzzle) {
+		this.gameState = GameState.INPROGRESS; // change to NOTSTARTED when implementing start
 		this.gridLineWidth = 2;
+		this.puzzle = puzzle;
 		this.offset = this.gridLineWidth / 2;
-		this.numGridRows =
-			puzzle.numRows + (drawBoxesForNumbers ? puzzle.maxColSize : 0);
-		this.numGridCols =
-			puzzle.numCols + (drawBoxesForNumbers ? puzzle.maxRowSize : 0);
-		this.cellStates = Array(puzzle.numCols)
+		this.numGridRows = puzzle.numRows;
+		this.numGridCols = puzzle.numCols;
+		this.cellStates = Array(puzzle.numRows)
 			.fill(null)
-			.map(() => Array(puzzle.numRows).fill(0));
+			.map(() => Array(puzzle.numCols).fill(0));
 		this._calcCanvasDims();
 	}
 
@@ -56,9 +64,9 @@ export default class CanvasHelper {
 
 	_drawGrid() {
 		strokeWeight(this.gridLineWidth);
-		this.cellStates.forEach((col, x) => {
-			col.forEach((_, y) => {
-				this._drawCell(x, y, true);
+		this.cellStates.forEach((row, y) => {
+			row.forEach((_, x) => {
+				this._drawCell(y, x, true);
 			});
 		});
 	}
@@ -69,52 +77,52 @@ export default class CanvasHelper {
 			case 0: // draw a blank cell
 				fill(255);
 				square(
-					this.offset + cellRow * this.cellWidth,
 					this.offset + cellCol * this.cellWidth,
+					this.offset + cellRow * this.cellWidth,
 					this.cellWidth
 				);
 				break;
 			case 1: // fill in the cell
 				fill(0);
 				square(
-					this.offset + cellRow * this.cellWidth,
 					this.offset + cellCol * this.cellWidth,
+					this.offset + cellRow * this.cellWidth,
 					this.cellWidth
 				);
 				break;
 			case 2: // draw an x
 				fill(255);
 				square(
-					this.offset + cellRow * this.cellWidth,
 					this.offset + cellCol * this.cellWidth,
+					this.offset + cellRow * this.cellWidth,
 					this.cellWidth
 				);
 				line(
 					this.offset +
-						cellRow * this.cellWidth +
-						this.gridLineWidth * 2,
-					this.offset +
 						cellCol * this.cellWidth +
 						this.gridLineWidth * 2,
 					this.offset +
-						(cellRow + 1) * this.cellWidth -
+						cellRow * this.cellWidth +
 						this.gridLineWidth * 2,
 					this.offset +
 						(cellCol + 1) * this.cellWidth -
+						this.gridLineWidth * 2,
+					this.offset +
+						(cellRow + 1) * this.cellWidth -
 						this.gridLineWidth * 2
 				);
 				line(
 					this.offset +
-						(cellRow + 1) * this.cellWidth -
-						this.gridLineWidth * 2,
-					this.offset +
 						cellCol * this.cellWidth +
 						this.gridLineWidth * 2,
 					this.offset +
-						cellRow * this.cellWidth +
+						(cellRow + 1) * this.cellWidth -
 						this.gridLineWidth * 2,
 					this.offset +
 						(cellCol + 1) * this.cellWidth -
+						this.gridLineWidth * 2,
+					this.offset +
+						cellRow * this.cellWidth +
 						this.gridLineWidth * 2
 				);
 				break;
@@ -141,8 +149,28 @@ export default class CanvasHelper {
 		const mx = window.winMouseX;
 		const my = window.winMouseY;
 		if (mx > this.gridWidth || my > this.gridHeight) return;
-		const cellRow = Math.floor(mx / this.cellWidth);
-		const cellCol = Math.floor(my / this.cellWidth);
+		const cellRow = Math.floor(my / this.cellWidth);
+		const cellCol = Math.floor(mx / this.cellWidth);
 		this._drawCell(cellRow, cellCol, false);
+		if (this._isGameWon()) this.gameState = GameState.FINISHED;
+	}
+
+	_isGameWon() {
+		let sol = this.puzzle.solution;
+		let state = this.cellStates;
+
+		for (let i = 0; i < sol.length; i++) {
+			for (let j = 0; j < sol[0].length; j++) {
+				if (
+					!(
+						(sol[i][j] == 0 && state[i][j] == 2) ||
+						sol[i][j] == state[i][j]
+					)
+				)
+					return false;
+			}
+		}
+
+		return true;
 	}
 }

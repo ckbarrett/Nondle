@@ -1,5 +1,14 @@
 import Puzzle from "./puzzle.js";
 
+let test10by15 = Array(10)
+	.fill(null)
+	.map(() => Array(15).fill(0));
+
+test10by15[0][1] = 1;
+
+export const Test10by15 = new Puzzle(test10by15);
+
+/*
 // Squirrel
 const squirrelRows = [
 	[3],
@@ -79,4 +88,4 @@ const teaPotCols = [
 ];
 
 export const Squirrel = new Puzzle(squirrelRows, squirrelCols);
-export const TeaPot = new Puzzle(teaPotRows, teaPotCols);
+export const TeaPot = new Puzzle(teaPotRows, teaPotCols);*/

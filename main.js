@@ -1,7 +1,7 @@
-import CanvasHelper from "./modules/canvas_helper.js";
-import { TeaPot } from "./modules/array_coded_puzzles.js";
+import CanvasHelper, { GameState } from "./modules/canvas_helper.js";
+import { Test10by15 } from "./modules/array_coded_puzzles.js";
 
-let ch = new CanvasHelper(TeaPot, false);
+let ch = new CanvasHelper(Test10by15);
 
 function setup() {
 	ch.createCanvas();
@@ -14,6 +14,7 @@ function windowResized() {
 }
 
 function mouseClicked() {
+	if (ch.gameState == GameState.FINISHED) return;
 	ch.progressCellStates();
 }
 
