@@ -5,6 +5,10 @@ let test10by15 = Array(10)
 	.map(() => Array(15).fill(0));
 
 test10by15[0][1] = 1;
+test10by15[0][2] = 1;
+test10by15[0][4] = 1;
+test10by15[4][14] = 1;
+test10by15[3][14] = 1;
 
 export const Test10by15 = new Puzzle(test10by15);
 
