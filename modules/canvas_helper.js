@@ -84,7 +84,7 @@ export default class CanvasHelper {
 		stroke(0);
 		strokeWeight(4);
 		this.puzzle.rowHints.forEach((arr, arrIndex) => {
-			arr.reverse().forEach((val, valIndex) => {
+			arr.toReversed().forEach((val, valIndex) => {
 				text(
 					val.toString(),
 					this.leftHintOffset -
@@ -96,7 +96,7 @@ export default class CanvasHelper {
 			});
 		});
 		this.puzzle.colHints.forEach((arr, arrIndex) => {
-			arr.reverse().forEach((val, valIndex) => {
+			arr.toReversed().forEach((val, valIndex) => {
 				text(
 					val.toString(),
 					this.leftHintOffset +
