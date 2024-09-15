@@ -25,6 +25,9 @@ export default class CanvasHelper {
 	puzzle;
 	leftHintOffset;
 	topHintOffset;
+	verticalCenterOffset;
+	horizontalCenterOffset;
+	textSize;
 
 	constructor(puzzle) {
 		this.gameState = GameState.INPROGRESS; // change to NOTSTARTED when implementing start
@@ -66,6 +69,9 @@ export default class CanvasHelper {
 		this.gridWidth = this.numGridCols * this.cellWidth;
 		this.leftHintOffset = this.puzzle.maxRowSize * this.squareWidth;
 		this.topHintOffset = this.puzzle.maxColSize * this.squareWidth;
+		this.textSize = Math.floor(this.squareWidth * 0.9);
+		this.verticalCenterOffset = Math.floor(this.squareWidth * 0.2);
+		this.horizontalCenterOffset = Math.floor(this.squareWidth * 0.32);
 	}
 
 	_drawGrid() {
@@ -79,18 +85,20 @@ export default class CanvasHelper {
 	}
 
 	_drawHints() {
-		textSize(Math.floor(this.squareWidth * 0.9));
-		fill(255);
+		textSize(this.textSize);
+		fill(0);
 		stroke(0);
-		strokeWeight(4);
+		strokeWeight(1);
 		this.puzzle.rowHints.forEach((arr, arrIndex) => {
 			arr.toReversed().forEach((val, valIndex) => {
 				text(
 					val.toString(),
-					this.leftHintOffset -
+					(val < 10 ? this.horizontalCenterOffset : 0) +
+						this.leftHintOffset -
 						(this.squareWidth + this.gridLineWidth) *
 							(1 + valIndex),
-					this.topHintOffset +
+					this.topHintOffset -
+						this.verticalCenterOffset +
 						(this.squareWidth + this.gridLineWidth) * (1 + arrIndex)
 				);
 			});
@@ -100,8 +108,10 @@ export default class CanvasHelper {
 				text(
 					val.toString(),
 					this.leftHintOffset +
-						(this.squareWidth + this.gridLineWidth) * arrIndex,
+						(val < 10 ? this.horizontalCenterOffset : 0) +
+						+(this.squareWidth + this.gridLineWidth) * arrIndex,
 					this.topHintOffset -
+						this.verticalCenterOffset -
 						(this.squareWidth + this.gridLineWidth) * valIndex
 				);
 			});
@@ -205,10 +215,8 @@ export default class CanvasHelper {
 			my > this.gridHeight + this.topHintOffset
 		)
 			return;
-		const cellRow =
-			Math.floor(my / this.cellWidth) - this.puzzle.maxColSize;
-		const cellCol =
-			Math.floor(mx / this.cellWidth) - this.puzzle.maxRowSize;
+		const cellRow = Math.floor((my - this.topHintOffset) / this.cellWidth);
+		const cellCol = Math.floor((mx - this.leftHintOffset) / this.cellWidth);
 		this._drawCell(cellRow, cellCol, false);
 		if (this._isGameWon()) this.gameState = GameState.FINISHED;
 	}

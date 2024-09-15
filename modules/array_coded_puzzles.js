@@ -7,6 +7,7 @@ let test10by15 = Array(10)
 test10by15[0][1] = 1;
 test10by15[0][2] = 1;
 test10by15[0][4] = 1;
+test10by15[0][6] = 1;
 test10by15[4][14] = 1;
 test10by15[3][14] = 1;
 

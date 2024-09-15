@@ -1,7 +1,13 @@
 import CanvasHelper, { GameState } from "./modules/canvas_helper.js";
-import { Test10by15 } from "./modules/array_coded_puzzles.js";
+import Puzzle from "./modules/puzzle.js";
 
-let ch = new CanvasHelper(Test10by15);
+const puzzle = await fetch("http://127.0.0.1:8000/nonogram")
+	.then((response) => response.json())
+	.then((json) => {
+		return new Puzzle(json.nonogram);
+	});
+
+let ch = new CanvasHelper(puzzle);
 
 function setup() {
 	ch.createCanvas();
