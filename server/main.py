@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from datetime import date
 
 app = FastAPI()
 
@@ -16,13 +17,26 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/nonogram")
-def get_nonogram():
-    f = open('../nonograms/test.nono', "r")
+startDate = date(2024,9,15)
+cachedDay = -1
+cachedPuzzle = []
+
+def puzzleFromFile(dayNumber):
+    f = open(f'../nonograms/{dayNumber}.nono', "r")
     returnArr = []
     for line in f:
         vals = line.split(',')
         vals[len(vals) - 1] = vals[len(vals) - 1][0] # strip newline
         returnArr.append(vals)
-    return {"nonogram": returnArr}
+    return returnArr
+
+@app.get("/nonogram")
+def get_nonogram():
+    global cachedDay
+    global cachedPuzzle
+    dayNumber = (date.today() - startDate).days
+    if cachedDay != dayNumber:
+        cachedPuzzle = puzzleFromFile(dayNumber)
+        cachedDay = dayNumber
+    return {"nonogram": cachedPuzzle}
     
