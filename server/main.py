@@ -21,6 +21,11 @@ startDate = date(2024,9,15)
 cachedDay = -1
 cachedPuzzle = []
 
+def numOfNonos():
+    f = open(f'./nonocount.txt', "r")
+    for line in f:
+      return int(line)
+
 def puzzleFromFile(dayNumber):
     f = open(f'../nonograms/{dayNumber}.nono', "r")
     returnArr = []
@@ -34,7 +39,7 @@ def puzzleFromFile(dayNumber):
 def get_nonogram():
     global cachedDay
     global cachedPuzzle
-    dayNumber = (date.today() - startDate).days
+    dayNumber = ((date.today() - startDate).days) % numOfNonos()
     if cachedDay != dayNumber:
         cachedPuzzle = puzzleFromFile(dayNumber)
         cachedDay = dayNumber
